@@ -1,1 +1,3 @@
-
+/WebContent/ueditor1_4_3-utf8-jsp/*
+!/WebContent/ueditor1_4_3-utf8-jsp/ueditor.config.js
+/WebContent/WEB-INF/lib/*
