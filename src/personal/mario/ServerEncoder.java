@@ -15,7 +15,7 @@ public class ServerEncoder implements Text<Message> {
     public void init(EndpointConfig arg0) {
     }
 
-    @Override  
+    @Override  //转换websocket send方法中的message对象为json字符串
     public String encode(Message message) throws EncodeException {
     	JSONObject jsonObject = new JSONObject(message);
     	return jsonObject.toString();

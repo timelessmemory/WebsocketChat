@@ -1,17 +1,55 @@
 package personal.mario;
 
+import java.util.Date;
+
 public class Message {
+	//系统消息 主要推送在线人数的变化
+	public static final String SYS_MSG = "system_message";
+
+	//一般聊天信息
+	public static final String COM_MSG = "common_message";
+	
+	private String type;
+	private String date;
+	private String username;
 	private String message;
 	private int count;
 	
 	public Message() {
 	}
 	
-	public Message(String message, int count) {
+	public Message(String type, String date, String username, String message, int count) {
+		this.type = type;
+		this.date = date;
+		this.username = username;
 		this.message = message;
 		this.count = count;
 	}
-	
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getDate() {
+		return date;
+	}
+
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
 	public String getMessage() {
 		return message;
 	}
