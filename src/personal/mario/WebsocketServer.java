@@ -58,7 +58,7 @@ public class WebsocketServer {
     		
     		for (WebsocketServer item : webSocketUsernameMap.keySet()) {
     			try {
-    				sendMsg(item, new Message(Message.COM_MSG, sdf.format(time), webSocketUsernameMap.get(item), content, getOnlineCount()));
+    				sendMsg(item, new Message(Message.COM_MSG, sdf.format(time), webSocketUsernameMap.get(this), content, getOnlineCount()));
     			} catch (Exception e) {
     				e.printStackTrace();
     			}

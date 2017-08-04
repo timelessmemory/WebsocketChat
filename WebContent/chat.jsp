@@ -58,6 +58,7 @@
 		    var websocket = null;
 		    var systemType = 'system_message'
 		    var commonType = 'common_message'
+		    var reg = new RegExp("<p><br/></p>", "g");
 			
 			$(function() {
 			    if ('WebSocket' in window && uname !== null) {
@@ -78,12 +79,13 @@
 
 				    websocket.onmessage = function(event) {
 				    	var data = $.parseJSON(event.data);
+				    	
 				    	if (data.type == systemType) {
 				    		$("#onlineCount").text(data.count);
 				    	} else {
 				    		var dateHTML = "<span class='date'>" + data.date + "</span>"
 				    		var usernameHTML = "<span class='username'>" + data.username + "</span>"
-				    		var contentHTML = "<span class='content'>" + data.message + "</span>"
+				    		var contentHTML = "<span class='content'>" + data.message.replace(reg, "") + "</span>"
 				    		var content = "<p>" + dateHTML + " " + usernameHTML + "</p>" + contentHTML
 				    		$("#message").append(content);
 
