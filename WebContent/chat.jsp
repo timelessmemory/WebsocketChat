@@ -28,7 +28,7 @@
 		          border-radius:4px;
 		    }
 
-		    .chat-content {
+		    .chat-content, .chat-list {
 		        padding-left:10px;
 		        max-height:374px;
 		        background-color: #fff;
@@ -79,9 +79,16 @@
 
 				    websocket.onmessage = function(event) {
 				    	var data = $.parseJSON(event.data);
-				    	
+
 				    	if (data.type == systemType) {
 				    		$("#onlineCount").text(data.count);
+
+				    		if (data.message == "enter") {
+				    			showTipMessage(data.username + "进入聊天室");
+				    			$(".chat-list").append("<p>" + data.username + "</p>");
+				    		} else {
+				    			showTipMessage(data.username + "离开聊天室");
+				    		}
 				    	} else {
 				    		var dateHTML = "<span class='date'>" + data.date + "</span>"
 				    		var usernameHTML = "<span class='username'>" + data.username + "</span>"
@@ -183,9 +190,6 @@
 			               	 	</div>
 			                </div>
 		                </div>
-		                <div class="panel-footer">
-		                    在线人数: <span id="onlineCount">1</span>
-		                </div>
 		            </div>
 		        </div>
 		    </div>
@@ -194,8 +198,13 @@
 		<!--chat content-->
 		<div class="container-fluid" style="margin-bottom: 15px;">
 		    <div class="row">
-		        <div class="col-md-12">
+		        <div class="col-md-8">
 					<div id="message" class="chat-content"></div>
+				</div>
+				<div class="col-md-4">
+					<div class="chat-list">
+	                    <p>在线人数: <span id="onlineCount">1</span></p>
+	                </div>
 				</div>
 			</div>
 		</div>

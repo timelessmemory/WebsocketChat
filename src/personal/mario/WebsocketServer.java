@@ -33,12 +33,13 @@ public class WebsocketServer {
     
     @OnClose
     public void onClose() {
-    	webSocketUsernameMap.remove(this);
         removeOnlineCount();
+        String username = webSocketUsernameMap.get(this);
+        webSocketUsernameMap.remove(this);
         
         for (WebsocketServer webSocket : webSocketUsernameMap.keySet()) {
             try {
-            	sendMsg(webSocket, new Message(Message.SYS_MSG, null, "", "", getOnlineCount()));
+                sendMsg(webSocket, new Message(Message.SYS_MSG, null, username, "exit", getOnlineCount()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -70,7 +71,7 @@ public class WebsocketServer {
             
         	for (WebsocketServer webSocket : webSocketUsernameMap.keySet()) {
                 try {
-                	sendMsg(webSocket, new Message(Message.SYS_MSG, null, "", "", getOnlineCount()));
+                	sendMsg(webSocket, new Message(Message.SYS_MSG, null, content, "enter", getOnlineCount()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
