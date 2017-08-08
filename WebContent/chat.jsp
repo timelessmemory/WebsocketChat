@@ -184,6 +184,7 @@
 		                	<div class="row">
 		                		<div class="col-md-6">
 				                	<label>聊天室</label>
+				                	<button class="btn btn-info btn-xs" onclick="closeWebSocket()">查看历史消息</button>
 				                </div>
 				                <div class="col-md-6" style="text-align:right;">
 			               	 		<button class="btn btn-info btn-xs" onclick="closeWebSocket()">退出</button>

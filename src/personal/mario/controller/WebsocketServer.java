@@ -1,4 +1,4 @@
-package personal.mario;
+package personal.mario.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,14 +8,20 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-
 import org.json.JSONObject;
+import org.springframework.web.context.ContextLoader;
 import org.springframework.web.socket.server.standard.SpringConfigurator;
+import personal.mario.bean.CopyOnWriteMap;
+import personal.mario.bean.Message;
+import personal.mario.dao.MessageDao;
+import personal.mario.util.ServerEncoder;
 
 @ServerEndpoint(value="/websocketServer", configurator=SpringConfigurator.class, encoders = { ServerEncoder.class })
 public class WebsocketServer {
 	//存储每个客户端对应的websocketServer实例与登录名map
     private static CopyOnWriteMap<WebsocketServer, String> webSocketUsernameMap = new CopyOnWriteMap<WebsocketServer, String>();
+    
+    private MessageDao messageDao = (MessageDao)ContextLoader.getCurrentWebApplicationContext().getBean("messageDao");
     
     //在线人数
     private static int onlineCount = 0;
@@ -59,7 +65,9 @@ public class WebsocketServer {
     		
     		for (WebsocketServer item : webSocketUsernameMap.keySet()) {
     			try {
-    				sendMsg(item, new Message(Message.COM_MSG, sdf.format(time), webSocketUsernameMap.get(this), content, getOnlineCount()));
+    				Message msg = new Message(Message.COM_MSG, sdf.format(time), webSocketUsernameMap.get(this), content, getOnlineCount());
+    				sendMsg(item, msg);
+    				messageDao.save(msg);
     			} catch (Exception e) {
     				e.printStackTrace();
     			}

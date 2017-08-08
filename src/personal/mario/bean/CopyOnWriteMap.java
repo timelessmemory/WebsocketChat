@@ -1,4 +1,4 @@
-package personal.mario;
+package personal.mario.bean;
 
 import java.util.Collection;
 import java.util.HashMap;

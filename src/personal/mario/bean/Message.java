@@ -1,8 +1,14 @@
-package personal.mario;
+package personal.mario.bean;
 
-import java.util.Date;
+import java.io.Serializable;
 
-public class Message {
+public class Message implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4206740875235171802L;
+
 	//系统消息 主要推送在线人数的变化
 	public static final String SYS_MSG = "system_message";
 
