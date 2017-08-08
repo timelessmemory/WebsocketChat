@@ -1,7 +1,10 @@
 package personal.mario.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -12,19 +15,23 @@ import org.json.JSONObject;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.socket.server.standard.SpringConfigurator;
 import personal.mario.bean.CopyOnWriteMap;
-import personal.mario.bean.Message;
+import personal.mario.bean.MessageType;
+import personal.mario.bean.SystemMessageResponse;
+import personal.mario.bean.ChatMessage;
+import personal.mario.bean.CommonMessageResponse;
 import personal.mario.dao.MessageDao;
-import personal.mario.util.ServerEncoder;
+import personal.mario.util.CommonMessageEncoder;
+import personal.mario.util.SystemMessageEncoder;
 
-@ServerEndpoint(value="/websocketServer", configurator=SpringConfigurator.class, encoders = { ServerEncoder.class })
+@ServerEndpoint(value="/websocketServer", configurator=SpringConfigurator.class, encoders = { CommonMessageEncoder.class, SystemMessageEncoder.class})
 public class WebsocketServer {
 	//存储每个客户端对应的websocketServer实例与登录名map
     private static CopyOnWriteMap<WebsocketServer, String> webSocketUsernameMap = new CopyOnWriteMap<WebsocketServer, String>();
     
     private MessageDao messageDao = (MessageDao)ContextLoader.getCurrentWebApplicationContext().getBean("messageDao");
     
-    //在线人数
-    private static int onlineCount = 0;
+    //在线成员
+    private static ConcurrentLinkedQueue<String> members = new ConcurrentLinkedQueue<String>();
 
     //每个webscoket客户端与服务器会话
     private Session session;
@@ -39,13 +46,13 @@ public class WebsocketServer {
     
     @OnClose
     public void onClose() {
-        removeOnlineCount();
         String username = webSocketUsernameMap.get(this);
+        removeMember(username);
         webSocketUsernameMap.remove(this);
         
         for (WebsocketServer webSocket : webSocketUsernameMap.keySet()) {
             try {
-                sendMsg(webSocket, new Message(Message.SYS_MSG, null, username, "exit", getOnlineCount()));
+                sendMsg(webSocket, new SystemMessageResponse(MessageType.SYS_MSG, username, "exit", members));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -58,15 +65,15 @@ public class WebsocketServer {
     	String type = messageObject.getString("messageType");
     	String content = messageObject.getString("message");
     	
-    	if (type.equals(Message.COM_MSG)) {
+    	if (type.equals(MessageType.COM_MSG)) {
             //群发消息
     		Date time = new Date();
     		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     		
     		for (WebsocketServer item : webSocketUsernameMap.keySet()) {
     			try {
-    				Message msg = new Message(Message.COM_MSG, sdf.format(time), webSocketUsernameMap.get(this), content, getOnlineCount());
-    				sendMsg(item, msg);
+    				sendMsg(item, new CommonMessageResponse(MessageType.COM_MSG, sdf.format(time), webSocketUsernameMap.get(this), content));
+    				ChatMessage msg = new ChatMessage(sdf.format(time), webSocketUsernameMap.get(this), content);
     				messageDao.save(msg);
     			} catch (Exception e) {
     				e.printStackTrace();
@@ -75,11 +82,11 @@ public class WebsocketServer {
     	} else {
             //链接成功后客户端会发送登录名  在此进行记录
     		webSocketUsernameMap.put(this, content);
-            addOnlineCount();
+            addMember(content);
             
         	for (WebsocketServer webSocket : webSocketUsernameMap.keySet()) {
                 try {
-                	sendMsg(webSocket, new Message(Message.SYS_MSG, null, content, "enter", getOnlineCount()));
+                	sendMsg(webSocket, new SystemMessageResponse(MessageType.SYS_MSG, content, "enter", members));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -92,19 +99,19 @@ public class WebsocketServer {
         error.printStackTrace();
     }
 
-    private void sendMsg(WebsocketServer webSocket, Message message) throws Exception {
+    private void sendMsg(WebsocketServer webSocket, Object message) throws Exception {
         webSocket.session.getBasicRemote().sendObject(message);
     }
     
-    public static int getOnlineCount() {
-        return onlineCount;
+    public static int getMembersCount() {
+        return members.size();
     }
 
-    public static synchronized void addOnlineCount() {
-        WebsocketServer.onlineCount++;
+    public static void addMember(String member) {
+    	members.add(member);
     }
 
-    public static synchronized void removeOnlineCount() {
-        WebsocketServer.onlineCount--;
+    public static void removeMember(String member) {
+        members.remove(member);
     }
 }

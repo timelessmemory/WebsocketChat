@@ -81,14 +81,20 @@
 				    	var data = $.parseJSON(event.data);
 
 				    	if (data.type == systemType) {
-				    		$("#onlineCount").text(data.count);
-
-				    		if (data.message == "enter") {
+				    		if (data.content == "enter") {
 				    			showTipMessage(data.username + "进入聊天室");
-				    			$(".chat-list").append("<p>" + data.username + "</p>");
 				    		} else {
 				    			showTipMessage(data.username + "离开聊天室");
 				    		}
+
+				    		$(".chat-list").empty();
+			    			$(".chat-list").append("<p>在线人数: <span id='onlineCount'>1</span></p>");
+			    			var tmpHTML = ""
+			    			data.members.forEach(function(value) {
+			    				tmpHTML += "<p>" + value + "</p>"
+			    			})
+			    			$(".chat-list").append(tmpHTML)
+				    		$("#onlineCount").text(data.members.length);
 				    	} else {
 				    		var dateHTML = "<span class='date'>" + data.date + "</span>"
 				    		var usernameHTML = "<span class='username'>" + data.username + "</span>"
@@ -204,7 +210,6 @@
 				</div>
 				<div class="col-md-4">
 					<div class="chat-list">
-	                    <p>在线人数: <span id="onlineCount">1</span></p>
 	                </div>
 				</div>
 			</div>

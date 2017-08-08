@@ -1,10 +1,9 @@
 package personal.mario.dao;
 
 import java.util.List;
-
-import personal.mario.bean.Message;
+import personal.mario.bean.ChatMessage;
 
 public interface MessageDao {
-	public void save(Message message);
-	public List<Message> getList(String key);
+	public void save(ChatMessage message);
+	public List<ChatMessage> getList(String key);
 }
