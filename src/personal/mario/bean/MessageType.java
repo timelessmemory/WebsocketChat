@@ -7,4 +7,7 @@ public class MessageType {
 
 	//一般聊天信息
 	public static final String COM_MSG = "common_message";
+	
+	//历史聊天信息
+	public static final String HIS_MSG = "history_message";
 }

@@ -1,7 +1,6 @@
 package personal.mario.controller;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -15,6 +14,7 @@ import org.json.JSONObject;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.socket.server.standard.SpringConfigurator;
 import personal.mario.bean.CopyOnWriteMap;
+import personal.mario.bean.HistoryMessageResponse;
 import personal.mario.bean.MessageType;
 import personal.mario.bean.SystemMessageResponse;
 import personal.mario.bean.ChatMessage;
@@ -22,8 +22,9 @@ import personal.mario.bean.CommonMessageResponse;
 import personal.mario.dao.MessageDao;
 import personal.mario.util.CommonMessageEncoder;
 import personal.mario.util.SystemMessageEncoder;
+import personal.mario.util.HistoryMessageEncoder;
 
-@ServerEndpoint(value="/websocketServer", configurator=SpringConfigurator.class, encoders = { CommonMessageEncoder.class, SystemMessageEncoder.class})
+@ServerEndpoint(value="/websocketServer", configurator=SpringConfigurator.class, encoders = { CommonMessageEncoder.class, SystemMessageEncoder.class, HistoryMessageEncoder.class})
 public class WebsocketServer {
 	//存储每个客户端对应的websocketServer实例与登录名map
     private static CopyOnWriteMap<WebsocketServer, String> webSocketUsernameMap = new CopyOnWriteMap<WebsocketServer, String>();
@@ -79,7 +80,7 @@ public class WebsocketServer {
     				e.printStackTrace();
     			}
     		}
-    	} else {
+    	} else if (type.equals(MessageType.SYS_MSG)) {
             //链接成功后客户端会发送登录名  在此进行记录
     		webSocketUsernameMap.put(this, content);
             addMember(content);
@@ -90,6 +91,13 @@ public class WebsocketServer {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+    	} else {
+    		try {
+    			List<ChatMessage> historyMessage = messageDao.getList();
+            	sendMsg(this, new HistoryMessageResponse(MessageType.HIS_MSG, historyMessage));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
     	}
     }

@@ -26,8 +26,11 @@ public class MessageDaoImpl implements MessageDao {
 	}
 
 	@Override
-	public List<ChatMessage> getList(String key) {
+	public List<ChatMessage> getList() {
+		redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<ChatMessage>(ChatMessage.class));
+		redisTemplate.afterPropertiesSet();
+		
 		ListOperations<String, ChatMessage> ops = redisTemplate.opsForList();
-		return ops.range("chatRecord", 0, ops.size("chatReocrd"));
+		return ops.range("chatRecord", 0, ops.size("chatReocrd") - 1);
 	}
 }
