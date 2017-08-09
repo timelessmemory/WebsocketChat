@@ -19,4 +19,5 @@
 ![](https://github.com/timelessmemory/WebsocketChat/blob/master/screenshot/chat.png?raw=true)
 ![](https://github.com/timelessmemory/WebsocketChat/blob/master/screenshot/c.png?raw=true)
 ![](https://github.com/timelessmemory/WebsocketChat/blob/master/screenshot/s.png?raw=true)
-![](https://github.com/timelessmemory/WebsocketChat/blob/master/screenshot/list.png?raw=true)
+![](https://github.com/timelessmemory/WebsocketChat/blob/master/screenshot/screen.png?raw=true)
+![](https://github.com/timelessmemory/WebsocketChat/blob/master/screenshot/history.png?raw=true)
