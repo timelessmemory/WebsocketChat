@@ -1,18 +1,12 @@
 # WebsocketChat
-## FEATURE
-1. 多人聊天（群聊）， 界面简洁美观， 使用ueditor支持发送文字，图片信息
-2. 群聊成员列表， 登入登出公告
-3. 存储聊天记录， 查看历史消息（按照日期筛选）
-4. 一对一聊天
-5. 并发处理
-6. spring + redis
+## INTRODUCTION
+version1.0 切换至one-to-many-one-chatroom分支
+该分支是对version1.0的改版
+1. 对于WebsocketServer对象的存储改为对Websocket中的Session对象的存储，并且不再使用Map存储。因为计划加入分布式设计，为了多服务器之间共享Session采取将Session存入Redis的方案。
+2. 为了节省内存，聊天成员也存入Redis
 
 ## TODO
-1. 当有人进入退出聊天室进行全屏公告(2017-8-4 finished)
-2. 使用redis保存聊天记录， 可以查询历史记录（按照日期筛选）
-3. 显示群聊成员，动态维护成员变化
-4. 一对一单人聊天
-5. 当前只有一个聊天室，扩展为多聊天室
+
 
 ## result
 
