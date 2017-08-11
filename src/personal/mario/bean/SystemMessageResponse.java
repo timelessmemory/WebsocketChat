@@ -1,16 +1,16 @@
 package personal.mario.bean;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.List;
 
 public class SystemMessageResponse {
 	private String type;
 	private String username;
 	private String content;
-	private ConcurrentLinkedQueue<String> members;
+	private List<String> members;
 	
 	public SystemMessageResponse() {}
 	
-	public SystemMessageResponse(String type, String username, String content, ConcurrentLinkedQueue<String> members) {
+	public SystemMessageResponse(String type, String username, String content, List<String> members) {
 		this.type = type;
 		this.username = username;
 		this.content = content;
@@ -35,11 +35,11 @@ public class SystemMessageResponse {
 		this.content = content;
 	}
 
-	public ConcurrentLinkedQueue<String> getMembers() {
+	public List<String> getMembers() {
 		return members;
 	}
 
-	public void setMembers(ConcurrentLinkedQueue<String> members) {
+	public void setMembers(List<String> members) {
 		this.members = members;
 	}
 }

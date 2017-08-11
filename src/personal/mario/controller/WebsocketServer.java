@@ -3,57 +3,53 @@ package personal.mario.controller;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
+import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import org.json.JSONObject;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.socket.server.standard.SpringConfigurator;
-import personal.mario.bean.CopyOnWriteMap;
 import personal.mario.bean.HistoryMessageResponse;
 import personal.mario.bean.MessageType;
 import personal.mario.bean.SystemMessageResponse;
 import personal.mario.bean.ChatMessage;
 import personal.mario.bean.CommonMessageResponse;
+import personal.mario.dao.ChatRoomDao;
+import personal.mario.dao.ChatroomMemberDao;
 import personal.mario.dao.MessageDao;
 import personal.mario.util.CommonMessageEncoder;
 import personal.mario.util.SystemMessageEncoder;
 import personal.mario.util.HistoryMessageEncoder;
 
-@ServerEndpoint(value="/websocketServer", configurator=SpringConfigurator.class, encoders = { CommonMessageEncoder.class, SystemMessageEncoder.class, HistoryMessageEncoder.class})
+@ServerEndpoint(value="/websocketServer/{chatRoomId}", configurator=SpringConfigurator.class, encoders = { CommonMessageEncoder.class, SystemMessageEncoder.class, HistoryMessageEncoder.class})
 public class WebsocketServer {
-	//存储每个客户端对应的websocketServer实例与登录名map
-    private static CopyOnWriteMap<WebsocketServer, String> webSocketUsernameMap = new CopyOnWriteMap<WebsocketServer, String>();
-    
+	private ChatRoomDao chatRoomDao = (ChatRoomDao)ContextLoader.getCurrentWebApplicationContext().getBean("chatRoomDao");
     private MessageDao messageDao = (MessageDao)ContextLoader.getCurrentWebApplicationContext().getBean("messageDao");
-    
-    //在线成员
-    private static ConcurrentLinkedQueue<String> members = new ConcurrentLinkedQueue<String>();
+    private ChatroomMemberDao chatroomMemberDao = (ChatroomMemberDao)ContextLoader.getCurrentWebApplicationContext().getBean("chatroomMemberDao");
 
-    //每个webscoket客户端与服务器会话
-    private Session session;
+//    private Session session;
     
     public WebsocketServer() {
     }
     
     @OnOpen
     public void onOpen(Session session) {
-        this.session = session;
+//        this.session = session;
     }
     
     @OnClose
-    public void onClose() {
-        String username = webSocketUsernameMap.get(this);
-        removeMember(username);
-        webSocketUsernameMap.remove(this);
+    public void onClose(Session session, @PathParam("chatRoomId") String chatRoomId) {
+        String username = chatRoomDao.get(chatRoomId, session);
+        chatroomMemberDao.remove(chatRoomId, username);
+        chatRoomDao.remove(chatRoomId, session);
         
-        for (WebsocketServer webSocket : webSocketUsernameMap.keySet()) {
+        for (Session sesion : chatRoomDao.getKeys(chatRoomId)) {
             try {
-                sendMsg(webSocket, new SystemMessageResponse(MessageType.SYS_MSG, username, "exit", members));
+                sendMsg(sesion, new SystemMessageResponse(MessageType.SYS_MSG, username, "exit", chatroomMemberDao.getAll(chatRoomId)));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -61,7 +57,7 @@ public class WebsocketServer {
     }
     
     @OnMessage
-    public void onMessage(String message, Session session) {
+    public void onMessage(String message, Session session, @PathParam("chatRoomId") String chatRoomId) {
     	JSONObject messageObject = new JSONObject(message);
     	String type = messageObject.getString("messageType");
     	String content = messageObject.getString("message");
@@ -71,23 +67,22 @@ public class WebsocketServer {
     		Date time = new Date();
     		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     		
-    		for (WebsocketServer item : webSocketUsernameMap.keySet()) {
+    		for (Session sesion : chatRoomDao.getKeys(chatRoomId)) {
     			try {
-    				sendMsg(item, new CommonMessageResponse(MessageType.COM_MSG, sdf.format(time), webSocketUsernameMap.get(this), content));
-    				ChatMessage msg = new ChatMessage(sdf.format(time), webSocketUsernameMap.get(this), content);
+    				sendMsg(sesion, new CommonMessageResponse(MessageType.COM_MSG, sdf.format(time), chatRoomDao.get(chatRoomId, session), content));
+    				ChatMessage msg = new ChatMessage(sdf.format(time), chatRoomDao.get(chatRoomId, session), content);
     				messageDao.save(msg);
     			} catch (Exception e) {
     				e.printStackTrace();
     			}
     		}
     	} else if (type.equals(MessageType.SYS_MSG)) {
-            //链接成功后客户端会发送登录名  在此进行记录
-    		webSocketUsernameMap.put(this, content);
-            addMember(content);
+    		chatRoomDao.save(chatRoomId, session, content);
+            chatroomMemberDao.save(chatRoomId, content);
             
-        	for (WebsocketServer webSocket : webSocketUsernameMap.keySet()) {
+        	for (Session sesion : chatRoomDao.getKeys(chatRoomId)) {
                 try {
-                	sendMsg(webSocket, new SystemMessageResponse(MessageType.SYS_MSG, content, "enter", members));
+                	sendMsg(sesion, new SystemMessageResponse(MessageType.SYS_MSG, content, "enter", chatroomMemberDao.getAll(chatRoomId)));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -95,7 +90,7 @@ public class WebsocketServer {
     	} else {
     		try {
     			List<ChatMessage> historyMessage = messageDao.getList();
-            	sendMsg(this, new HistoryMessageResponse(MessageType.HIS_MSG, historyMessage));
+            	sendMsg(session, new HistoryMessageResponse(MessageType.HIS_MSG, historyMessage));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -107,19 +102,8 @@ public class WebsocketServer {
         error.printStackTrace();
     }
 
-    private void sendMsg(WebsocketServer webSocket, Object message) throws Exception {
-        webSocket.session.getBasicRemote().sendObject(message);
-    }
-    
-    public static int getMembersCount() {
-        return members.size();
-    }
-
-    public static void addMember(String member) {
-    	members.add(member);
-    }
-
-    public static void removeMember(String member) {
-        members.remove(member);
+    private void sendMsg(Session session, Object message) throws Exception {
+    	System.out.println(session);
+        session.getBasicRemote().sendObject(message);
     }
 }

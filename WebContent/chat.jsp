@@ -35,7 +35,7 @@
 		                <div class="panel-heading">
 		                	<div class="row">
 		                		<div class="col-md-6">
-				                	<label>聊天室</label>
+				                	<label id="chatRoom">聊天室</label>
 				                </div>
 				                <div class="col-md-6" style="text-align:right;">
 			               	 		<button class="btn btn-info btn-xs" onclick="closeWebSocket()">退出</button>

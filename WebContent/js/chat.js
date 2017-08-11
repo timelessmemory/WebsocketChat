@@ -1,4 +1,5 @@
 var uname = prompt('请输入用户名', 'user' + uuid(8, 16));
+var chatRoomId = prompt('请输入聊天室ID', 'chatRoomId' + uuid(8, 16));
 var ue = UE.getEditor('editor');
 var websocket = null;
 var systemType = 'system_message'
@@ -7,8 +8,10 @@ var historyType = 'history_message'
 var reg = new RegExp("<p><br/></p>", "g");
 
 $(function() {
-    if ('WebSocket' in window && uname !== null) {
-        websocket = new WebSocket("ws://localhost:8080/WebsocketChat/websocketServer");
+    if ('WebSocket' in window && uname !== null && chatRoomId != null) {
+    	$('#chatRoom').text('聊天室' + chatRoomId);
+    	
+        websocket = new WebSocket("ws://localhost:8080/WebsocketChat/websocketServer/" + chatRoomId);
 	    
 	    websocket.onopen = function(event) {
 	        showTipMessage("连接服务器成功");
