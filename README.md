@@ -1,4 +1,4 @@
-# WebsocketChat
+# WebsocketChat(多人，多聊天室版)
 ## FEATURE
 1. 多人聊天，多聊天室， 互相独立, 界面简洁美观， 使用ueditor支持发送文字，图片信息
 2. 群聊成员列表， 登入登出公告
@@ -9,8 +9,8 @@
 3. redis存储聊天成员
 
 ## result
-![](https://github.com/timelessmemory/WebsocketChat/blob/master/screenshot/1.png?raw=true)
-![](https://github.com/timelessmemory/WebsocketChat/blob/master/screenshot/2.png?raw=true)
-![](https://github.com/timelessmemory/WebsocketChat/blob/master/screenshot/3.png?raw=true)
-![](https://github.com/timelessmemory/WebsocketChat/blob/master/screenshot/4.png?raw=true)
-![](https://github.com/timelessmemory/WebsocketChat/blob/master/screenshot/history.png?raw=true)
+![](https://github.com/timelessmemory/WebsocketChat/blob/one-to-many-multi-chatroom/screenshot/1.png?raw=true)
+![](https://github.com/timelessmemory/WebsocketChat/blob/one-to-many-multi-chatroom/screenshot/2.png?raw=true)
+![](https://github.com/timelessmemory/WebsocketChat/blob/one-to-many-multi-chatroom/screenshot/3.png?raw=true)
+![](https://github.com/timelessmemory/WebsocketChat/blob/one-to-many-multi-chatroom/screenshot/4.png?raw=true)
+![](https://github.com/timelessmemory/WebsocketChat/blob/one-to-many-multi-chatroom/screenshot/history.png?raw=true)
