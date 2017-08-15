@@ -74,12 +74,12 @@ public class WebsocketServer {
     		for (WebsocketServer item : webSocketUsernameMap.keySet()) {
     			try {
     				sendMsg(item, new CommonMessageResponse(MessageType.COM_MSG, sdf.format(time), webSocketUsernameMap.get(this), content));
-    				ChatMessage msg = new ChatMessage(sdf.format(time), webSocketUsernameMap.get(this), content);
-    				messageDao.save(msg);
     			} catch (Exception e) {
     				e.printStackTrace();
     			}
     		}
+    		ChatMessage msg = new ChatMessage(sdf.format(time), webSocketUsernameMap.get(this), content);
+    		messageDao.save(msg);
     	} else if (type.equals(MessageType.SYS_MSG)) {
             //链接成功后客户端会发送登录名  在此进行记录
     		webSocketUsernameMap.put(this, content);
