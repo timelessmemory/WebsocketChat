@@ -9,7 +9,7 @@ var reg = new RegExp("<p><br/></p>", "g");
 
 $(function() {
     if ('WebSocket' in window && uname !== null && chatRoomId != null) {
-    	$('#chatRoom').text('聊天室' + chatRoomId);
+    	$('#chatRoom').text(chatRoomId + '聊天室');
     	
         websocket = new WebSocket("ws://localhost:8080/WebsocketChat/websocketServer/" + chatRoomId);
 	    

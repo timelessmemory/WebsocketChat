@@ -32,6 +32,6 @@ public class MessageDaoImpl implements MessageDao {
 		redisTemplate.afterPropertiesSet();
 		
 		ListOperations<String, ChatMessage> ops = redisTemplate.opsForList();
-		return ops.range(chatRoomId + TAG, 0, ops.size("chatReocrd") - 1);
+		return ops.range(chatRoomId + TAG, 0, ops.size(chatRoomId + TAG) - 1);
 	}
 }

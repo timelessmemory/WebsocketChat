@@ -70,12 +70,12 @@ public class WebsocketServer {
     		for (Session sesion : chatRoomDao.getKeys(chatRoomId)) {
     			try {
     				sendMsg(sesion, new CommonMessageResponse(MessageType.COM_MSG, sdf.format(time), chatRoomDao.get(chatRoomId, session), content));
-    				ChatMessage msg = new ChatMessage(sdf.format(time), chatRoomDao.get(chatRoomId, session), content);
-    				messageDao.save(chatRoomId, msg);
-    			} catch (Exception e) {
-    				e.printStackTrace();
-    			}
-    		}
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+			ChatMessage msg = new ChatMessage(sdf.format(time), chatRoomDao.get(chatRoomId, session), content);
+			messageDao.save(chatRoomId, msg);
     	} else if (type.equals(MessageType.SYS_MSG)) {
     		chatRoomDao.save(chatRoomId, session, content);
             chatroomMemberDao.save(chatRoomId, content);
