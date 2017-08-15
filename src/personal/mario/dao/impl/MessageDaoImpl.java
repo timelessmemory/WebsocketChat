@@ -11,26 +11,27 @@ import personal.mario.dao.MessageDao;
 
 @Repository("messageDao")
 public class MessageDaoImpl implements MessageDao {
-
+	public static final String TAG = "chatRecord";
+	
 	@Autowired
 	private RedisTemplate<String, ChatMessage> redisTemplate;
 	
 	@Override
-	public void save(ChatMessage message) {
+	public void save(String chatRoomId, ChatMessage message) {
 		redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<ChatMessage>(ChatMessage.class));
 		//初始化bean时运行 序列化类涉及泛型所以配置文件注入不适用
 		redisTemplate.afterPropertiesSet();
 
 		ListOperations<String, ChatMessage> ops = redisTemplate.opsForList();
-		ops.leftPush("chatRecord", message);
+		ops.leftPush(chatRoomId + TAG, message);
 	}
 
 	@Override
-	public List<ChatMessage> getList() {
+	public List<ChatMessage> getList(String chatRoomId) {
 		redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<ChatMessage>(ChatMessage.class));
 		redisTemplate.afterPropertiesSet();
 		
 		ListOperations<String, ChatMessage> ops = redisTemplate.opsForList();
-		return ops.range("chatRecord", 0, ops.size("chatReocrd") - 1);
+		return ops.range(chatRoomId + TAG, 0, ops.size("chatReocrd") - 1);
 	}
 }

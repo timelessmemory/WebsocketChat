@@ -71,7 +71,7 @@ public class WebsocketServer {
     			try {
     				sendMsg(sesion, new CommonMessageResponse(MessageType.COM_MSG, sdf.format(time), chatRoomDao.get(chatRoomId, session), content));
     				ChatMessage msg = new ChatMessage(sdf.format(time), chatRoomDao.get(chatRoomId, session), content);
-    				messageDao.save(msg);
+    				messageDao.save(chatRoomId, msg);
     			} catch (Exception e) {
     				e.printStackTrace();
     			}
@@ -89,7 +89,7 @@ public class WebsocketServer {
             }
     	} else {
     		try {
-    			List<ChatMessage> historyMessage = messageDao.getList();
+    			List<ChatMessage> historyMessage = messageDao.getList(chatRoomId);
             	sendMsg(session, new HistoryMessageResponse(MessageType.HIS_MSG, historyMessage));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -103,7 +103,6 @@ public class WebsocketServer {
     }
 
     private void sendMsg(Session session, Object message) throws Exception {
-    	System.out.println(session);
         session.getBasicRemote().sendObject(message);
     }
 }
