@@ -1,4 +1,4 @@
-# WebsocketChat
+# WebsocketChat(多人，单聊天室版)
 ## FEATURE
 1. 多人聊天， 界面简洁美观， 使用ueditor支持发送文字，图片信息
 2. 群聊成员列表， 登入登出公告
