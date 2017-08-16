@@ -1,50 +1,36 @@
-var uname = prompt('请输入用户名', 'user' + uuid(8, 16));
-var chatRoomId = prompt('请输入聊天室ID', 'chatRoomId' + uuid(8, 16));
 var ue = UE.getEditor('editor');
 var websocket = null;
 var systemType = 'system_message'
 var commonType = 'common_message'
 var historyType = 'history_message'
 var reg = new RegExp("<p><br/></p>", "g");
+var from = getQueryString("from");
+var to = getQueryString("to");
 
 $(function() {
-    if ('WebSocket' in window && uname !== null && chatRoomId != null) {
-    	$('#chatRoom').text('聊天室' + chatRoomId);
-    	
-        websocket = new WebSocket("ws://localhost:8080/WebsocketChat/websocketServer/" + chatRoomId);
+	$("title")[0].innerText = "与" + to + "交谈中"
+
+    if ('WebSocket' in window) {
+        websocket = new WebSocket("ws://localhost:8080/WebsocketChat/chatServer");
 	    
 	    websocket.onopen = function(event) {
-	        showTipMessage("连接服务器成功");
-	        //与服务器建立链接后发送登录名到服务器进行标识
+	        console.log("连接服务器成功");
 	        sendMsg({
 	        	messageType : systemType,
-	        	message : uname
+	        	from : from,
+	        	to : to
 	        });
 	    };
 
 	    websocket.onclose = function() {
-	        showTipMessage("与服务器断开连接");
+	        console.log("与服务器断开连接");
 	    };
 
 	    websocket.onmessage = function(event) {
 	    	var data = $.parseJSON(event.data);
 	    	var tmpHTML = ""
 
-	    	if (data.type == systemType) {
-	    		if (data.content == "enter") {
-	    			showTipMessage(data.username + "进入聊天室");
-	    		} else {
-	    			showTipMessage(data.username + "离开聊天室");
-	    		}
-
-	    		$(".chat-list").empty();
-    			$(".chat-list").append("<p>在线人数: <span id='onlineCount'>1</span></p>");
-    			data.members.forEach(function(value) {
-    				tmpHTML += "<p>" + value + "</p>"
-    			})
-    			$(".chat-list").append(tmpHTML)
-	    		$("#onlineCount").text(data.members.length);
-	    	} else if (data.type == commonType) {
+	    	if (data.type == commonType) {
 	    		$("#message").append(jointHTML(data));
 
 	    		//滚动条自动向下移动
@@ -117,7 +103,9 @@ function sendTextMessage() {
     if (message != "") {
     	sendMsg({
     		messageType : commonType,
-    		message : message
+    		message : message,
+    		from : from,
+    		to : to
     	});
     	ue.setContent('');
     }
@@ -147,4 +135,10 @@ function uuid(len, radix) {
         }
     }
     return uuid.join('');
+}
+
+function getQueryString(name) {
+	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    return r != null ? unescape(r[2]) : null;
 }

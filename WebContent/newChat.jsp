@@ -2,15 +2,15 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-	    <title>WebSocket聊天室</title>
+	    <title>newChat</title>
 	    <link rel="stylesheet" href="css/bootstrap.min.css">
-	    <link rel="stylesheet" href="css/chat.css">
+	    <link rel="stylesheet" href="css/index.css">
 	    <script type="text/javascript" charset="utf-8" src="ueditor1_4_3-utf8-jsp/ueditor.config.js"></script>
 	    <script type="text/javascript" charset="utf-8" src="ueditor1_4_3-utf8-jsp/ueditor.all.min.js"> </script>
 	    <script type="text/javascript" charset="utf-8" src="ueditor1_4_3-utf8-jsp/lang/zh-cn/zh-cn.js"></script>
 	    <script src="js/jquery.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
-		<script src="js/chat.js"></script>
+		<script src="js/newChat.js"></script>
 	</head>
 	<body>
 	  	<!--alert-->
@@ -35,7 +35,7 @@
 		                <div class="panel-heading">
 		                	<div class="row">
 		                		<div class="col-md-6">
-				                	<label id="chatRoom">聊天室</label>
+				                	<label id="chatRoom">畅聊</label>
 				                </div>
 				                <div class="col-md-6" style="text-align:right;">
 			               	 		<button class="btn btn-info btn-xs" onclick="closeWebSocket()">退出</button>

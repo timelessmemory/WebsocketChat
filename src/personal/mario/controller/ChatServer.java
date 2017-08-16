@@ -1,5 +1,8 @@
 package personal.mario.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -9,18 +12,23 @@ import javax.websocket.server.ServerEndpoint;
 import org.json.JSONObject;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.socket.server.standard.SpringConfigurator;
+
+import personal.mario.bean.CommonMessageResponse;
 import personal.mario.bean.MessageType;
 import personal.mario.bean.SystemMessageResponse;
 import personal.mario.dao.ChatRoomDao;
+import personal.mario.dao.ChatSessionStorageDao;
 import personal.mario.dao.ChatroomMemberDao;
+import personal.mario.dao.impl.ChatSessionStorageDaoImpl;
+import personal.mario.util.CommonMessageEncoder;
 import personal.mario.util.SystemMessageEncoder;
 
-@ServerEndpoint(value="/websocketServer", configurator=SpringConfigurator.class, encoders = {SystemMessageEncoder.class})
-public class WebsocketServer {
+@ServerEndpoint(value="/chatServer", configurator=SpringConfigurator.class, encoders = {CommonMessageEncoder.class})
+public class ChatServer {
 	private ChatRoomDao chatRoomDao = (ChatRoomDao)ContextLoader.getCurrentWebApplicationContext().getBean("chatRoomDao");
-    private ChatroomMemberDao chatroomMemberDao = (ChatroomMemberDao)ContextLoader.getCurrentWebApplicationContext().getBean("chatroomMemberDao");
+    private ChatSessionStorageDao chatSessionStorageDao = (ChatSessionStorageDao)ContextLoader.getCurrentWebApplicationContext().getBean("chatSessionStorageDao");
 
-    public WebsocketServer() {
+    public ChatServer() {
     }
     
     @OnOpen
@@ -29,36 +37,34 @@ public class WebsocketServer {
     
     @OnClose
     public void onClose(Session session) {
-        String username = chatRoomDao.getUname(session);
-        chatroomMemberDao.remove(username);
-        chatRoomDao.remove(session);
         
-        for (Session sesion : chatRoomDao.getSessionKeys()) {
-            try {
-                sendMsg(sesion, new SystemMessageResponse(MessageType.SYS_MSG, username, "exit", chatroomMemberDao.getAll()));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
     
     @OnMessage
     public void onMessage(String message, Session session) {
     	JSONObject messageObject = new JSONObject(message);
-        String content = messageObject.getString("message");
     	String messageType = messageObject.getString("messageType");
+    	String from = messageObject.getString("from");
+    	String to = messageObject.getString("to");
     	
         if (messageType.equals(MessageType.SYS_MSG)) {
-    		chatRoomDao.save(session, content);
-            chatroomMemberDao.save(content);
-            
-        	for (Session sesion : chatRoomDao.getSessionKeys()) {
-                try {
-                	sendMsg(sesion, new SystemMessageResponse(MessageType.SYS_MSG, content, "enter", chatroomMemberDao.getAll()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            chatSessionStorageDao.save(from, to, from, session);
+        } else if (messageType.equals(MessageType.COM_MSG)) {
+        	String sendMessage = messageObject.getString("message");
+        	Session toSession = chatSessionStorageDao.getSession(from, to, to);
+        	
+        	if (toSession == null) {
+        		toSession = chatRoomDao.getSession(to);
+        	}
+        	
+        	Date time = new Date();
+        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        	
+        	try {
+				sendMsg(toSession, new CommonMessageResponse(MessageType.COM_MSG, sdf.format(time), from, sendMessage));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
         }
     }
     

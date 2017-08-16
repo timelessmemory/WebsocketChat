@@ -3,13 +3,10 @@ package personal.mario.dao.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Repository;
-
-import personal.mario.controller.WebsocketServer;
 import personal.mario.dao.ChatroomMemberDao;
 
 @Repository("chatroomMemberDao")
@@ -20,29 +17,29 @@ public class ChatroomMemberDaoImpl implements ChatroomMemberDao {
 	private RedisTemplate<String, String> redisTemplate;
 	
 	@Override
-	public void save(String chatroom, String uname) {
+	public void save(String uname) {
 		redisTemplate.setValueSerializer(new StringRedisSerializer());
 		redisTemplate.afterPropertiesSet();
 		
 		ListOperations<String, String> operations = redisTemplate.opsForList();
-		operations.leftPush(chatroom + TAG, uname);
+		operations.leftPush(TAG, uname);
 	}
 	
 	@Override
-	public void remove(String chatroom, String uname) {
+	public void remove(String uname) {
 		redisTemplate.setValueSerializer(new StringRedisSerializer());
 		redisTemplate.afterPropertiesSet();
 		
 		ListOperations<String, String> operations = redisTemplate.opsForList();
-		operations.remove(chatroom + TAG, 1, uname);
+		operations.remove(TAG, 1, uname);
 	}
 	
 	@Override
-	public List<String> getAll(String chatroom) {
+	public List<String> getAll() {
 		redisTemplate.setValueSerializer(new StringRedisSerializer());
 		redisTemplate.afterPropertiesSet();
 		
 		ListOperations<String, String> operations = redisTemplate.opsForList();
-		return operations.range(chatroom + TAG, 0, operations.size(chatroom + TAG) - 1);
+		return operations.range(TAG, 0, operations.size(TAG) - 1);
 	}
 }

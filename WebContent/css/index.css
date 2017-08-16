@@ -70,3 +70,8 @@
     font-size: 25px;
     cursor: pointer;
 }
+
+div.member-item:focus {
+    background-color: #38c4a9;
+    cursor: pointer;
+}

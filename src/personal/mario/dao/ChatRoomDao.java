@@ -4,8 +4,9 @@ import java.util.Set;
 import javax.websocket.Session;
 
 public interface ChatRoomDao {
-	public void save(String chatroom, Session session, String uname);
-	public String get(String chatroom, Session session);
-	public void remove(String chatroom, Session session);
-	public Set<Session> getKeys(String chatroom);
+	public void save(Session session, String uname);
+	public String getUname(Session session);
+	public void remove(Session session);
+	public Set<Session> getSessionKeys();
+	public Session getSession(String uname);
 }
