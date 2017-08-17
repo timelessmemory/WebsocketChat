@@ -1,7 +1,8 @@
 # WebsocketChat
 ## INTRODUCTION
 ### version1.0 多人单聊天室版 切换至one-to-many-one-chatroom分支<br/>
-### version1.0 多人多聊天室版 切换至one-to-many-multi-chatroom分支<br/>
+### version2.0 多人多聊天室版 切换至one-to-many-multi-chatroom分支<br/>
+### version3.0 一对一聊天版 切换至one-to-one-chatroom分支<br/>
 ### 该分支是终极版（尚未实现）<br/>
 1. 对于WebsocketServer对象的存储改为对Websocket中的Session对象的存储，并且不再使用Map存储。因为计划加入分布式设计，为了多服务器之间共享Session采取将Session存入Redis的方案。
 2. 为了节省内存，聊天成员也存入Redis
