@@ -45,14 +45,10 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/json.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/ueditor-1.1.2.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jedis-2.9.0.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring-data-redis-1.7.10.RELEASE.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/commons-pool-1.6.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/commons-pool2-2.4.2.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jackson-databind-2.8.7.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jackson-core-2.7.3.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring-data-redis-1.6.2.RELEASE.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/aopalliance-1.0.jar"/>
-	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jackson-annotations-2.8.8.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jackson-annotations-2.8.7.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jackson-core-2.8.7.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
