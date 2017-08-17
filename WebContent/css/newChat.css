@@ -1,0 +1,38 @@
+.chat-content, .chat-list {
+    padding-left:10px;
+    max-height:374px;
+    background-color: #fff;
+    width:100%;  
+    overflow-y:auto;
+    overflow-x:hidden;
+    border: 1px solid #c8e1ff;
+    height:374px;
+}
+
+.chat-content .date {
+	color: rgb(106, 115, 125);
+}
+
+.chat-content .username {
+	color: rgb(3, 102, 214);
+}
+
+.chat-content .content {
+	color: rgb(36, 41, 46);
+	font-size: 18px;
+}
+
+.btn-pos {
+	position: absolute;
+    right: 21px;
+    top: 5px;
+}
+
+div.member-item:focus {
+    background-color: #38c4a9;
+    cursor: pointer;
+}
+
+.history-tip {
+    color: grey;
+}

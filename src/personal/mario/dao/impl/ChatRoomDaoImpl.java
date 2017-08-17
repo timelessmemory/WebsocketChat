@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import personal.mario.bean.CopyOnWriteMap;
 import personal.mario.dao.ChatRoomDao;
 
+//存储所有在线session
 @Repository("chatRoomDao")
 public class ChatRoomDaoImpl implements ChatRoomDao {
 	

@@ -4,7 +4,8 @@
 	<head>
 	    <title>newChat</title>
 	    <link rel="stylesheet" href="css/bootstrap.min.css">
-	    <link rel="stylesheet" href="css/index.css">
+	    <link rel="stylesheet" href="css/common.css">
+	    <link rel="stylesheet" href="css/newChat.css">
 	    <script type="text/javascript" charset="utf-8" src="ueditor1_4_3-utf8-jsp/ueditor.config.js"></script>
 	    <script type="text/javascript" charset="utf-8" src="ueditor1_4_3-utf8-jsp/ueditor.all.min.js"> </script>
 	    <script type="text/javascript" charset="utf-8" src="ueditor1_4_3-utf8-jsp/lang/zh-cn/zh-cn.js"></script>
@@ -19,15 +20,6 @@
 		  <p style="text-align:center;" id="tip"></p>
 		</div>
 
-		<div class="container-fluid history-div">
-		    <div class="row">
-		        <div class="col-md-12">
-					<div id="history-list" style="position:relative;">
-					</div>
-				</div>
-			</div>
-		</div>
-
 		<div class="container-fluid" style="margin-top: 5%;">
 		    <div class="row">
 		        <div class="col-md-12">
@@ -38,7 +30,7 @@
 				                	<label id="chatRoom">畅聊</label>
 				                </div>
 				                <div class="col-md-6" style="text-align:right;">
-			               	 		<button class="btn btn-info btn-xs" onclick="closeWebSocket()">退出</button>
+			               	 		<button class="btn btn-info btn-xs" onclick="closeWebSocket()">结束聊天</button>
 			               	 	</div>
 			                </div>
 		                </div>
@@ -52,7 +44,7 @@
 		    <div class="row">
 		        <div class="col-md-8">
 					<div id="message" class="chat-content">
-						<button class="btn btn-info btn-link btn-pos" onclick="getHistoryMessage()">查看历史消息</button>
+						
 					</div>
 				</div>
 				<div class="col-md-4">

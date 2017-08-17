@@ -1,22 +1,14 @@
-::-webkit-scrollbar {
-    background-color: transparent;
-    width: 7px;
-    height: 7px;
+div.member-item:focus {
+    background-color: #38c4a9;
+    cursor: pointer;
 }
 
-::-webkit-scrollbar-track {
-      background: #c8c9ca;
-      border-radius: 4px;
+div.member-item:hover {
+    background-color: #337ab7;
+    cursor: pointer;
 }
 
-::-webkit-scrollbar-thumb {
-      background:#38c4a9;
-      min-height:6px;
-      width:5px;
-      border-radius:4px;
-}
-
-.chat-content, .chat-list {
+.chat-list, .notice-content {
     padding-left:10px;
     max-height:374px;
     background-color: #fff;
@@ -27,51 +19,12 @@
     height:374px;
 }
 
-.chat-content .date {
-	color: rgb(106, 115, 125);
+.member-item {
+    color: rgb(3, 102, 214);
 }
 
-.chat-content .username {
-	color: rgb(3, 102, 214);
-}
-
-.chat-content .content {
-	color: rgb(36, 41, 46);
-	font-size: 18px;
-}
-
-.btn-pos {
-	position: absolute;
-    right: 21px;
-    top: 5px;
-}
-
-.history-div {
-	display: none;
-	background-color: #ceeaea;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    margin: auto;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    overflow: auto;
-    z-index: 9999;
-    border-radius: 4px;
-    box-shadow: 0 1px 1px rgba(0,0,0,.05);
-    border-color: #337ab7;
-}
-
-.close-btn {
-	position: absolute;
-    right: -5px;
-    font-size: 25px;
-    cursor: pointer;
-}
-
-div.member-item:focus {
-    background-color: #38c4a9;
-    cursor: pointer;
+.receive-message {
+    color: rgb(36, 41, 46);
+    font-size: 18px;
+    margin-left: 20px;
 }

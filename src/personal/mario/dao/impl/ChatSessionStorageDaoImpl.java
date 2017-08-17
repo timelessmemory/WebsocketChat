@@ -1,10 +1,14 @@
 package personal.mario.dao.impl;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import javax.websocket.Session;
 import org.springframework.stereotype.Repository;
 import personal.mario.bean.CopyOnWriteMap;
 import personal.mario.dao.ChatSessionStorageDao;
 
+//存储一对一聊天双方的session
 @Repository("chatSessionStorageDao")
 public class ChatSessionStorageDaoImpl implements ChatSessionStorageDao {
 	private static CopyOnWriteMap<String, CopyOnWriteMap<String, Session>> map = new CopyOnWriteMap<>();
@@ -39,5 +43,30 @@ public class ChatSessionStorageDaoImpl implements ChatSessionStorageDao {
 		}
 		
 		return unameSession == null ? null : unameSession.get(uname);
+	}
+	
+	public void closeSession(Session session) {
+		String key = "";
+		String uname = "";
+		boolean flag = false;
+		
+		for (Entry<String, CopyOnWriteMap<String, Session>> entry : map.entrySet()) {
+			String tmp = entry.getKey();
+			for (Entry<String, Session> ety : entry.getValue().entrySet()) {
+				if (ety.getValue() == session) {
+					uname = ety.getKey();
+					key = tmp;
+					if (map.get(tmp).size() == 1) {
+						flag = true;
+					}
+				}
+			}
+		}
+		
+		if (flag) {
+			map.remove(key);
+		} else {
+			map.get(key).remove(uname);
+		}
 	}
 }

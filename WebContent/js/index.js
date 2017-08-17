@@ -28,11 +28,11 @@ $(function() {
 	    		if (data.content == "enter") {
 	    			showTipMessage(data.username + "上线");
 	    		} else {
-	    			showTipMessage(data.username + "上线");
+	    			showTipMessage(data.username + "下线");
 	    		}
 
 	    		$(".chat-list").empty();
-    			$(".chat-list").append("<p>在线好友: <span id='onlineCount'>1</span></p>");
+    			$(".chat-list").append("<p>在线好友列表 : <span id='onlineCount'>1</span>(单击以建立聊天)</p>");
     			data.members.forEach(function(value) {
     				tmpHTML += "<div class='member-item' tabindex='-1' onclick='newChat(\"" + uname + "\", \"" + value + "\")'>" + value + "</div>"
     			})
@@ -41,12 +41,16 @@ $(function() {
 	    	} else {
                 addReceiveMessage(data)
                 $(".notice-content").empty();
-                $(".notice-content").append("<p>: 好友消息<span id='receiveCount'>1</span></p>");
+                var head = receiveMessage.length == 0 ? "<p>暂无未读好友消息</p>" : "<p>未读的好友消息 : <span id='receiveCount'>1</span>(单击进行回复)</p>";
+                $(".notice-content").append(head);
+
                 receiveMessage.forEach(function(value) {
-                    tmpHTML += "<div class='member-item' tabindex='-1' onclick='receiveChat(\"" + uname + "\", \"" + value.username + "\")'>" + value.username + " &nbsp;<span>" + value.message + "</span></div>"
+                    tmpHTML += "<div class='member-item' tabindex='-1' onclick='receiveChat(\"" + uname + "\", \"" + value.username + "\")'>" + value.username + "在" + value.date + "给你发了：</div><div class='receive-message'>" + value.message + "</div>"
                 })
                 $(".notice-content").append(tmpHTML)
-                $("#receiveCount").text(receiveMessage.length);
+                if (receiveMessage.length > 0) {
+                    $("#receiveCount").text(receiveMessage.length);
+                }
             }
 	    };
 
@@ -72,18 +76,46 @@ var addReceiveMessage = function(data) {
     }
 }
 
-var removeReceiveMessage = function(data) {
+var removeReceiveMessage = function(to) {
+    var flag = -1
+    receiveMessage.forEach(function(item, idx) {
+        if (item.username == to) {
+            flag = idx
+        }
+    })
 
+    if (flag != -1) {
+        receiveMessage.splice(flag, 1)
+    }
 }
 
 window.onbeforeunload = function () {
     closeWebSocket();
 };
 
-var newChat = receiveChat = function(from, to) {
+var newChat = function(from, to) {
 	if (from != to) {
-		window.open("newChat.jsp?from=" + from + "&to=" + to, "_blank");
+		window.open("newChat.jsp?from=" + escape(from) + "&to=" + escape(to), "_blank");
 	}
+}
+
+var receiveChat = function(from, to) {
+    newChat(from, to);
+    removeReceiveMessage(to);
+    var tmpHTML = "";
+    $(".notice-content").empty();
+    var head = receiveMessage.length == 0 ? "<p>暂无未读好友消息</p>" : "<p>未读的好友消息 : <span id='receiveCount'>1</span>(点击查看)</p>";
+    $(".notice-content").append(head);
+
+    receiveMessage.forEach(function(value) {
+        tmpHTML += "<div class='member-item' tabindex='-1' onclick='receiveChat(\"" + uname + "\", \"" + value.username + "\")'>" + value.username + "在" + value.date + "给你发了：</div><div class='receive-message'>" + value.message + "</div>"
+    })
+    $(".notice-content").append(tmpHTML)
+
+    if (receiveMessage.length > 0) {
+        $("#receiveCount").text(receiveMessage.length);
+    }
+
 }
 
 function showTipMessage(tipMessage) {

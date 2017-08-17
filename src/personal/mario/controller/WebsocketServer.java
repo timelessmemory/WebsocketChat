@@ -14,8 +14,10 @@ import personal.mario.bean.SystemMessageResponse;
 import personal.mario.dao.ChatRoomDao;
 import personal.mario.dao.ChatroomMemberDao;
 import personal.mario.util.SystemMessageEncoder;
-
-@ServerEndpoint(value="/websocketServer", configurator=SpringConfigurator.class, encoders = {SystemMessageEncoder.class})
+import personal.mario.util.CommonMessageEncoder;
+import personal.mario.util.HistoryMessageEncoder;
+//在线好友列表控制器
+@ServerEndpoint(value="/websocketServer", configurator=SpringConfigurator.class, encoders = {SystemMessageEncoder.class, CommonMessageEncoder.class, HistoryMessageEncoder.class})//这边的session会被websocket中调用发送commonmessage，所以需要引入CommonMessageEncoder
 public class WebsocketServer {
 	private ChatRoomDao chatRoomDao = (ChatRoomDao)ContextLoader.getCurrentWebApplicationContext().getBean("chatRoomDao");
     private ChatroomMemberDao chatroomMemberDao = (ChatroomMemberDao)ContextLoader.getCurrentWebApplicationContext().getBean("chatroomMemberDao");

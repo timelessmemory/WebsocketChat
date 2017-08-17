@@ -2,8 +2,9 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-	    <title>畅聊</title>
+	    <title>畅聊主界面</title>
 	    <link rel="stylesheet" href="css/bootstrap.min.css">
+	    <link rel="stylesheet" href="css/common.css">
 	    <link rel="stylesheet" href="css/index.css">
 	    <script src="js/jquery.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
@@ -26,7 +27,7 @@
 				                	<label id="username">主页</label>
 				                </div>
 				                <div class="col-md-6" style="text-align:right;">
-			               	 		<button class="btn btn-info btn-xs" onclick="closeWebSocket()">退出</button>
+			               	 		<button class="btn btn-info btn-xs" onclick="closeWebSocket()">退出畅聊</button>
 			               	 	</div>
 			                </div>
 		                </div>

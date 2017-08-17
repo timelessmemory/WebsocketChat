@@ -35,18 +35,19 @@ $(function() {
 
 	    		//滚动条自动向下移动
 	    		$("#message")[0].scrollTop = $("#message")[0].scrollHeight;
-	    	} else {
+	    	} else if (data.type == historyType) {
 	    		if (data.content.length != 0) {
-		    		$('#history-list').empty();
-		    		$('#history-list').append("<span class='close-btn' onclick='hideWindow()'>&times;</span>");
+		    		$('#message').empty();
 	    			data.content.reverse().forEach(function(record) {
 	    				tmpHTML += jointHTML(record)
 	    			})
-	    			$("#history-list").append(tmpHTML);
-	    			$(".history-div").show();
-	    		} else {
-	    			showTipMessage("暂无历史消息")
+	    			$("#message").append(tmpHTML);
+		    		$('#message').append("<p></p>");
+		    		$('#message').append("<p class='history-tip'><------以上为历史消息------></p>");
+		    		$('#message').append("<p></p>");
 	    		}
+	    	} else {
+	    		showTipMessage(data.username + "不在线");
 	    	}
 	    };
 
@@ -67,17 +68,6 @@ function jointHTML(record) {
 	var usernameHTML = "<span class='username'>" + record.username + "</span>"
 	var contentHTML = "<span class='content'>" + record.message.replace(reg, "") + "</span>"
 	return "<p>" + dateHTML + " " + usernameHTML + "</p>" + contentHTML
-}
-
-function hideWindow() {
-	$(".history-div").hide();
-}
-
-function getHistoryMessage() {
-	sendMsg({
-    	messageType : historyType,
-    	message : uname
-    });
 }
 
 function showTipMessage(tipMessage) {
@@ -115,26 +105,6 @@ document.onkeydown = function(event) {
 	if (event.keyCode === 13) {
 		sendTextMessage();
 	}
-}
-
-function uuid(len, radix) {
-    var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
-    var uuid = [], i;
-    radix = radix || chars.length;
-    if (len) {
-        for (i = 0; i < len; i++) uuid[i] = chars[0 | Math.random() * radix];
-    } else {
-        var r;
-        uuid[8] = uuid[13] = uuid[18] = uuid[23] = '-';
-        uuid[14] = '4';
-        for (i = 0; i < 36; i++) {
-            if (!uuid[i]) {
-                r = 0 | Math.random() * 16;
-                uuid[i] = chars[(i == 19) ? (r & 0x3) | 0x8 : r];
-            }
-        }
-    }
-    return uuid.join('');
 }
 
 function getQueryString(name) {

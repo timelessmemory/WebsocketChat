@@ -86,7 +86,6 @@ public class CopyOnWriteMap<K, V> implements Map<K, V>, Cloneable{
 
 	@Override
 	public Set<java.util.Map.Entry<K, V>> entrySet() {
-		// TODO Auto-generated method stub
-		return null;
+		return internalMap.entrySet();
 	}
 }
